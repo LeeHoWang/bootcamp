@@ -1,0 +1,41 @@
+-- Solution 1
+-- WITH daily_total AS (
+--     -- 步驟1：計算每天總營業額
+--     SELECT 
+--         visited_on,
+--         SUM(amount) AS daily_amount
+--     FROM Customer
+--     GROUP BY visited_on
+-- ),
+-- moving_stats AS (
+--     SELECT 
+--         visited_on,
+--         SUM(daily_amount) OVER (
+--             ORDER BY visited_on
+--             ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+--         ) AS amount,
+--         ROUND(
+--             AVG(daily_amount) OVER (
+--                 ORDER BY visited_on
+--                 ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+--             ), 
+--             2
+--         ) AS average_amount,
+--         -- 計算窗口中的天數
+--         COUNT(*) OVER (
+--             ORDER BY visited_on
+--             ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+--         ) AS days_count
+--     FROM daily_total
+-- )
+-- -- 步驟3：只顯示有完整7天數據的日期
+-- SELECT 
+--     visited_on,
+--     amount,
+--     average_amount
+-- FROM moving_stats
+-- WHERE days_count = 7
+-- ORDER BY visited_on;
+
+
+-- Solution 2

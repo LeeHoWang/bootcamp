@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import com.bootcamp.self_bc_mtr.dto.LineSignalDto;
 import com.bootcamp.self_bc_mtr.dto.MtrDto;
 import com.bootcamp.self_bc_mtr.dto.RespondDto;
 import com.bootcamp.self_bc_mtr.entity.StationEntity;
@@ -75,6 +76,7 @@ public class StationService{
     if (stopData == null){
       throw new IllegalArgumentException("invalid line/station code");
     }
+
     if (stopData.UP != null && !stopData.UP.isEmpty()){
          MtrDto.MtrArrival earliestUP = stopData.UP.get(0);
 
@@ -87,6 +89,7 @@ public class StationService{
 
          trains.add(upTrain); 
       }
+
       if (stopData.DOWN != null && !stopData.DOWN.isEmpty()){
          MtrDto.MtrArrival earliestDOWN = stopData.DOWN.get(0);
 
@@ -99,6 +102,7 @@ public class StationService{
 
          trains.add(downTrain); 
       }  
+      
       return RespondDto.builder()
                           .curr_time(result.getCurr_time())
                           .sys_time(result.getSys_time())
@@ -107,6 +111,56 @@ public class StationService{
                           .build();
 
   }
-  
-}
 
+
+  public LineSignalDto getSignal(String line){
+  List<StationEntity> stations = stationRepository.findByLineCode(line);   
+  
+  if (stations.isEmpty()){
+    throw new IllegalArgumentException("Empty input");
+  }
+  else {
+    List<String> delayStataions = new ArrayList<>();
+    String currTime = null;
+    String sysTime = null;
+
+    for (StationEntity s : stations){
+      String url = "https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line="
+                   + line + "&sta=" + s.getStationCode();
+      MtrDto mtr = restTemplate.getForObject(url, MtrDto.class);
+      
+      if (mtr != null) {
+        currTime = mtr.getCurr_time();
+        sysTime = mtr.getSys_time();
+
+      if ("Y".equals(mtr.getIsdelay())){
+      delayStataions.add(s.getStationCode());
+      }
+
+    }
+
+  }
+
+    String signal = "";
+    if (delayStataions.size() == 0){
+       signal = "GREEN";
+    }
+    if (delayStataions.size() == 1){
+       signal = "YELLOW";
+    }
+    if (delayStataions.size() > 1){
+       signal = "RED";
+    }  
+    return LineSignalDto.builder()
+                        .line(line)
+                        .signal(signal)
+                        .delayStations(delayStataions)
+                        .curr_time(currTime)
+                        .sys_time(sysTime)
+                        .build();
+
+  }
+  
+  }
+
+}

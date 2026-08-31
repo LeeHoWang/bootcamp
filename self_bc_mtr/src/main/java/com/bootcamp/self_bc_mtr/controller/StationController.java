@@ -1,5 +1,6 @@
 package com.bootcamp.self_bc_mtr.controller;
 
+import com.bootcamp.self_bc_mtr.dto.LineSignalDto;
 import com.bootcamp.self_bc_mtr.dto.MtrDto;
 import com.bootcamp.self_bc_mtr.dto.RespondDto;
 import com.bootcamp.self_bc_mtr.entity.StationEntity;
@@ -58,6 +59,10 @@ public class StationController{
       return stationService.getEarliestArrival(line, sta);
   }
   
+  @GetMapping("/line/signal")
+  public LineSignalDto getSignal(@RequestParam String line) {
+      return stationService.getSignal(line);
+  }
   
 
 }

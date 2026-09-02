@@ -64,5 +64,11 @@ public class StationController{
       return stationService.getSignal(line);
   }
   
+  @GetMapping("/line/signals")
+  public List<LineSignalDto> getAllSignals() {
+      return stationService.getAllSignals();
+  }
+
+  
 
 }

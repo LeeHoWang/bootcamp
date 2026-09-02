@@ -2,8 +2,10 @@ package com.bootcamp.self_bc_mtr.service;
 
 import com.bootcamp.self_bc_mtr.repository.StationRepository;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.bootcamp.self_bc_mtr.dto.LineSignalDto;
@@ -112,7 +114,6 @@ public class StationService{
 
   }
 
-
   public LineSignalDto getSignal(String line){
   List<StationEntity> stations = stationRepository.findByLineCode(line);   
   
@@ -159,8 +160,23 @@ public class StationService{
                         .sys_time(sysTime)
                         .build();
 
+   }
   }
-  
+
+  public List<LineSignalDto> getAllSignals(){
+    Set<String> lines = new HashSet<>();
+    for (StationEntity s: findallStation()) {
+      if (s.getLineCode() != null){
+        lines.add(s.getLineCode());
+      } 
+    }
+
+    List<LineSignalDto> result = new ArrayList<>();
+    for (String l: lines){
+      LineSignalDto signal = getSignal(l);
+      result.add(signal);
+    }
+    return result;
   }
 
 }

@@ -10,6 +10,7 @@ import com.bootcamp.self_bc_mtr.service.StationService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,8 +46,8 @@ public class StationController{
   }
 
   @DeleteMapping("/removed")
-  public void removebycode(@RequestParam String stationCode){
-    stationService.removebycode(stationCode);
+  public void removeStation(@RequestParam String stationCode){
+    stationService.removeStation(stationCode);
   }
    
   @GetMapping("/trainTime")
@@ -68,6 +69,12 @@ public class StationController{
   public List<LineSignalDto> getAllSignals() {
       return stationService.getAllSignals();
   }
+
+  @GetMapping("/stations/map")
+  public Map<String, List<StationEntity>> getAllStation() {
+      return stationService.getAllStation();
+  }
+  
 
   
 

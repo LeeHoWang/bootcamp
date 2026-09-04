@@ -2,8 +2,10 @@ package com.bootcamp.self_bc_mtr.service;
 
 import com.bootcamp.self_bc_mtr.repository.StationRepository;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.stereotype.Service;
@@ -178,5 +180,52 @@ public class StationService{
     }
     return result;
   }
+
+  public Map<String, List<StationEntity>> getAllStation() {
+    Map<String, List<StationEntity>> result = new HashMap<>();
+
+    for (StationEntity s : findallStation()) {
+      String key = s.getLineCode();
+      if (key == null) {
+        continue;
+      }
+      if (!result.containsKey(key)) {
+        result.put(key, new ArrayList<>());
+      }
+      result.get(key).add(s);
+    }
+   return result;
+  }
+
+public void removeStation(String stationCode) {
+  Optional<StationEntity> opt = stationRepository.findByStationCode(stationCode);
+  if (opt.isEmpty()) {
+    throw new IllegalArgumentException("stationCode not exist");
+  }
+
+  StationEntity b = opt.get();
+  String previous = b.getPrevious();
+  String next = b.getNext();
+  stationRepository.deleteById(b.getId());
+
+  if (previous != null && !previous.isBlank()) {
+    Optional<StationEntity> prevOpt = getStation(previous);
+    if (prevOpt.isPresent()) {
+      StationEntity a = prevOpt.get();
+      a.setNext(next);
+      save(a);
+    }
+  }
+
+  if (next != null && !next.isBlank()) {
+    Optional<StationEntity> nextOpt = getStation(next);
+    if (nextOpt.isPresent()) {
+      StationEntity c = nextOpt.get();
+      c.setPrevious(previous);
+      save(c);
+    }
+  }
+}
+
 
 }

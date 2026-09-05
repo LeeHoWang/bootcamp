@@ -25,11 +25,6 @@ public class StationController{
     this.stationService = stationService;
   }
 
-  @PostMapping("/save")
-  public StationEntity saveStation(@RequestBody StationEntity stationEntity) {
-    return stationService.save(stationEntity);
-  }
-
   @GetMapping("/stationcode")
   public Optional<StationEntity> getStation(@RequestParam String stationCode) {
     return stationService.getStation(stationCode);
@@ -75,7 +70,9 @@ public class StationController{
       return stationService.getAllStation();
   }
   
-
+  @PostMapping("/save")
+  public StationEntity insertStation(@RequestBody StationEntity stationEntity) {
+      return stationService.insertStation(stationEntity);
+  }
   
-
 }

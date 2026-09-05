@@ -223,9 +223,46 @@ public void removeStation(String stationCode) {
       StationEntity c = nextOpt.get();
       c.setPrevious(previous);
       save(c);
+      }
     }
   }
-}
+
+  public StationEntity insertStation(StationEntity b){
+    String b_station_code = b.getStationCode();
+
+    if (b_station_code == null || b_station_code.isBlank()) {
+      throw new IllegalArgumentException("Incorrect StationCode");
+    }
+    if (getStation(b_station_code).isPresent()){
+      throw new IllegalArgumentException("code already exists");
+    }
+    b = save(b);
+
+    String previous = b.getPrevious(); 
+
+    if (previous != null && !previous.isBlank()) {
+      Optional<StationEntity> prevOpt = getStation(previous);
+      if (prevOpt.isPresent()) {
+        StationEntity a = prevOpt.get();
+        a.setNext(b_station_code);
+        save(a);
+        }
+      }
+
+    String next = b.getNext();
+
+    if (next != null && !next.isBlank()) {
+      Optional<StationEntity> nextOpt = getStation(next);
+      if (nextOpt.isPresent()) {
+        StationEntity c = nextOpt.get();
+        c.setPrevious(b_station_code);
+        save(c);
+        }
+      }
+      return b;
+
+    }
+
 
 
 }

@@ -1,6 +1,6 @@
 // TODO: replace with your Railway deployment URL before going live
 // const BASE_URL = 'https://xxxxxx.up.railway.app';
-const BASE_URL = 'https://seminar-backend-production.up.railway.app';
+const BASE_URL = 'https://bootcamp-production-a1a3.up.railway.app';
 
 async function getAllApplications(page = 0, size = 7) {
   const url = `${BASE_URL}/api/applications?page=${page}&size=${size}&sort=createdAt,desc`;

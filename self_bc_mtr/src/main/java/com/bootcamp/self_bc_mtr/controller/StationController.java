@@ -4,7 +4,6 @@ import com.bootcamp.self_bc_mtr.dto.LineSignalDto;
 import com.bootcamp.self_bc_mtr.dto.MtrDto;
 import com.bootcamp.self_bc_mtr.dto.RespondDto;
 import com.bootcamp.self_bc_mtr.entity.StationEntity;
-import com.bootcamp.self_bc_mtr.repository.StationRepository;
 import org.springframework.web.bind.annotation.RestController;
 import com.bootcamp.self_bc_mtr.service.StationService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,10 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 public class StationController{
   private StationService stationService;
-
-  public StationController(StationRepository stationRepository, StationService stationService){
-    this.stationService = stationService;
-  }
 
   @GetMapping("/stationcode")
   public Optional<StationEntity> getStation(@RequestParam String stationCode) {
@@ -74,5 +69,6 @@ public class StationController{
   public StationEntity insertStation(@RequestBody StationEntity stationEntity) {
       return stationService.insertStation(stationEntity);
   }
+
   
 }

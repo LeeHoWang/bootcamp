@@ -14,9 +14,3 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
-api:
-  host: "jsonplaceholder.typicode.com"
-  path:
-    users: "/users"
-    posts: "/posts"
